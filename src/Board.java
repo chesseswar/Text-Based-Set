@@ -3,6 +3,8 @@ import java.util.*;
 public class Board {
     ArrayList<Card> onBoard;
     ArrayList<Card> deck;
+    boolean gameOver;
+
     public Board() {
         onBoard = new ArrayList<>(12);
         deck = new ArrayList<>();
@@ -16,6 +18,7 @@ public class Board {
             }
         }
 
+        deal();
     }
 
     public boolean setExists(ArrayList<Card> cards) {
@@ -65,20 +68,70 @@ public class Board {
             onBoard.add(deck.remove(r.nextInt(deck.size())));
         }
 
-        reshuffle();
+        ensureSetExists();
     }
 
-    void reshuffle() {
+    void ensureSetExists() {
         Random r = new Random();
-        while (!setExists()) {
-            for (int i = 0; i < 3; i++) {
-                onBoard.remove(r.nextInt(onBoard.size()));
+        ArrayList<Card> inPlay = new ArrayList<>(deck);
+        inPlay.addAll(onBoard);
+        if (setExists(inPlay)) {
+            while (!setExists(onBoard)) {
+                int aIndex = r.nextInt(onBoard.size());
+                int bIndex = r.nextInt(onBoard.size());
+                while (bIndex == aIndex) {
+                    bIndex = r.nextInt(onBoard.size());
+                }
+
+                Card c = completeSet(onBoard.get(aIndex), onBoard.get(bIndex));
+                int cIndex = deck.indexOf(c);
+                if (cIndex != -1) {
+                    int removeIndex = 0;
+                    while (removeIndex == aIndex || removeIndex == bIndex) {
+                        removeIndex++;
+                    }
+
+                    if (removeIndex < onBoard.size()) {
+                        deck.add(onBoard.remove(removeIndex));
+                        onBoard.add(deck.remove(cIndex));
+                    }
+                }
+            }
+        } else {
+            gameOver = true;
+        }
+    }
+
+    public boolean selectCards(int[] cards) {
+        if (cards.length != 3) {
+            return false;
+        }
+
+        ArrayList<Card> selection = new ArrayList<>();
+        for (int i = 0; i < cards.length; i++) {
+            if (cards[i] < 0 || cards[i] >= onBoard.size()) {
+                return false;
             }
 
-            for (int i = 0; i < 3; i++) {
-                onBoard.add(deck.remove(r.nextInt(deck.size())));
-            }
+            selection.add(onBoard.get(cards[i]));
         }
+
+        if (!validSet(selection)) {
+            return false;
+        }
+
+        onBoard.removeAll(selection);
+        Random r = new Random();
+        for (int i = 0; i < 3; i++) {
+            onBoard.add(deck.remove(r.nextInt(deck.size())));
+        }
+
+        ensureSetExists();
+        return true;
+    }
+
+    public boolean validSet(ArrayList<Card> cards) {
+        return cards.size() == 3 && cards.get(0).validSet(cards.get(1), cards.get(2));
     }
 
     public String toString() {
@@ -107,7 +160,7 @@ public class Board {
             output.append("\n");
         }
 
-        return output.toString();
+        return output.toString() + "\n" + onBoard.toString();
     }
 
 

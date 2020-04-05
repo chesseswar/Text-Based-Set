@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Card {
     static final String[] colors = {"\u001B[31m", "\u001B[34m", "\u001B[32m"};
     static final String RESET = "\u001B[0m";
@@ -67,6 +69,23 @@ public class Card {
         return output;
     }
 
+    public boolean equals(Object o) {
+        if (!(o instanceof Card)) {
+            return false;
+        }
 
+        Card other = (Card) o;
+        return other.count == count && other.shape == shape && other.fill == fill && other.color == color;
+    }
 
+    @Override
+    public String toString() {
+        return "Card{" +
+                "count=" + count +
+                ", shape=" + shape +
+                ", fill=" + fill +
+                ", color=" + color +
+                ", image=" + Arrays.toString(image) +
+                '}';
+    }
 }
