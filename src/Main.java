@@ -23,20 +23,26 @@ public class Main {
             if (input.toUpperCase().trim().equals("Q")) {
                 break;
             }
-            while (!validInput(input) || !b.selectCards(parseInput(input))) {
+            while (!input.toUpperCase().equals("Q") && (!validInput(input) || !b.selectCards(parseInput(input)))) {
                 System.out.println("Your input was invalid or those cards do not form a set. Select three cards.");
                 System.out.println(b);
                 input = in.nextLine();
+            }
+
+            if (input.toUpperCase().equals("Q")) {
+                break;
             }
 
             System.out.println("Valid Set!");
             score++;
         }
 
-        long end = System.currentTimeMillis();
+        long time = System.currentTimeMillis() - start;
+        long minutes = time / 60;
+        long seconds = time % 60;
         System.out.println("Game over!");
         System.out.println("Your score was: " + score);
-        System.out.println("Your time was: " + (end - start) / 1000);
+        System.out.println("Your time was: " + minutes + ":" + seconds + ".");
     }
 
     static int[] parseInput(String input) {

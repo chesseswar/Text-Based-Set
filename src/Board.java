@@ -123,7 +123,9 @@ public class Board {
         onBoard.removeAll(selection);
         Random r = new Random();
         for (int i = 0; i < 3; i++) {
-            onBoard.add(deck.remove(r.nextInt(deck.size())));
+            if (deck.size() > 0) {
+                onBoard.add(deck.remove(r.nextInt(deck.size())));
+            }
         }
 
         ensureSetExists();
