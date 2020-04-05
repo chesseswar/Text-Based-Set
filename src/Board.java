@@ -160,7 +160,7 @@ public class Board {
             output.append("\n");
         }
 
-        return output.toString() + "\n" + onBoard.toString();
+        return output.toString();
     }
 
 

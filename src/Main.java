@@ -11,6 +11,7 @@ public class Main {
         Board b = new Board();
         System.out.println("Select three cards by giving three column-row pairs separated by commas.");
         System.out.println("Ex: a1, B2, 3c");
+        System.out.println("Enter q or Q as an input at any time to quit.");
         System.out.println("Press any button and enter when you are ready to begin.");
         in.nextLine();
         long start = System.currentTimeMillis();
@@ -19,8 +20,12 @@ public class Main {
             System.out.println(b);
             System.out.println("Select three cards.");
             String input = in.nextLine();
+            if (input.toUpperCase().trim().equals("Q")) {
+                break;
+            }
             while (!validInput(input) || !b.selectCards(parseInput(input))) {
                 System.out.println("Your input was invalid or those cards do not form a set. Select three cards.");
+                System.out.println(b);
                 input = in.nextLine();
             }
 
@@ -30,6 +35,7 @@ public class Main {
 
         long end = System.currentTimeMillis();
         System.out.println("Game over!");
+        System.out.println("Your score was: " + score);
         System.out.println("Your time was: " + (end - start) / 1000);
     }
 
@@ -41,7 +47,7 @@ public class Main {
             String standardizedInput = standardizeInput(cardCoords[i]);
             char col = standardizedInput.charAt(0);
             char row = standardizedInput.charAt(1);
-            output[i] = (row - 1) * 4 + (col - 'A');
+            output[i] = (row - '1') * 4 + (col - 'A');
         }
 
         return output;
